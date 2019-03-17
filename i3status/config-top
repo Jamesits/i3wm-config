@@ -1,0 +1,139 @@
+# i3status configuration file.
+# see "man i3status" for documentation.
+
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
+general {
+        colors = true
+        interval = 1
+}
+
+order += "external_script hostname"
+order += "external_script netpos"
+order += "group weather"
+#order += "weather_yahoo ningbo"
+#order += "kdeconnector"
+order += "wireless _first_"
+order += "ethernet enp1s0"
+order += "external_script netspeed"
+order += "volume master"
+order += "battery 0"
+order += "tztime local"
+
+external_script hostname {
+	script_path = "cat /etc/hostname | cut -d '.' -f 1"
+	cache_timeout = 3600
+}
+	
+wireless _first_ {
+        format_up = "%essid %ip %quality"
+        format_down = "Wi-Fi"
+}
+
+ethernet enp1s0 {
+	format_up = "E %ip %speed"
+	format_down = "enp1s0"
+}
+
+ethernet _first_ {
+        # if you use %speed, i3status requires root privileges
+        format_up = "%ip %speed"
+        format_down = "Ethernet"
+}
+
+kdeconnector {
+    format = "{name} {battery} ⚡ {state}"
+    low_battery = "10"
+}
+
+battery 0 {
+        format = "%status%percentage %remaining"
+	path = "/sys/class/power_supply/BAT1/uevent"
+}
+
+run_watch DHCP {
+        pidfile = "/var/run/dhclient*.pid"
+}
+
+run_watch VPN {
+        pidfile = "/var/run/vpnc/pid"
+}
+
+run_watch OpenVPN {
+	pidfile = "/var/run/openvpn*.pid"
+}
+
+tztime local {
+        format = "%Y-%m-%d %H:%M:%S"
+}
+
+cpu_usage {
+	format = "%usage"
+}
+
+load {
+        format = "%1min %5min %15min"
+}
+
+disk "/" {
+        format = "%avail"
+}
+
+cpu_temperature 0 {
+	format = "T: %degrees °C"
+	path = "/sys/devices/platform/coretemp.0/temp1_input"
+}
+
+volume master {
+	format = "♪%volume"
+	format_muted = "♪×%volume"
+	device = "pulse:1"
+}
+
+whatismyip {
+}
+
+external_script netspeed {
+	script_path = "/home/james/.config/i3status/measure-net-speed.bash"
+}
+
+external_script netpos {
+	script_path = "curl ip.cn | cut -d' ' -f'3,4' | cut -c '10-' | tr -d ' '"
+	cache_timeout = 60
+}
+
+group weather {
+    cycle = 10
+    format = "{output} {button}"
+
+weather_yahoo ningbo {
+	woeid = 12685388
+	format_today = "宁波 {icon}{temp}°{units} {text}"
+	forecast_days = 3
+	forecast_include_today = true
+	format_forecast = "{icon}{low}/{high}°{units}"
+	forecast_text_separator = "|"
+}
+
+weather_yahoo hangzhou {
+	woeid = 2132574
+	format_today = "杭州 {icon}{temp}°{units} {text}"
+	forecast_days = 3
+	forecast_include_today = true
+	format_forecast = "{icon}{low}/{high}°{units}"
+	forecast_text_separator = "|"
+}
+
+weather_yahoo qingdao {
+	woeid = 2168606
+	format_today = "青岛 {icon}{temp}°{units} {text}"
+	forecast_days = 3
+	forecast_include_today = true
+	format_forecast = "{icon}{low}/{high}°{units}"
+	forecast_text_separator = "|"
+}
+
+}
